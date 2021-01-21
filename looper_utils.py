@@ -184,3 +184,42 @@ def mask_by_mass(obj1, obj2, evt_mask, mass_lim):
             continue
         mask[i] = True 
     return mask 
+
+@nb.jit
+def mask_by_dR_mll_0lep_2tau(taus, dR_lims, mll_lims):
+    nEvents = len(taus)
+    mask = np.zeros(nEvents, dtype=np.int64) > 0
+    for i in range(nEvents):
+        # if there is no tau in this event (masked by ntau = 2 requirement early on)
+        if len(taus[i]) != 2: continue
+        tau1 = taus[i][0]
+        tau2 = taus[i][1]
+        m = np.sqrt(2*tau1.pt*tau2.pt*(np.cosh(tau1.eta - tau2.eta) - np.cos(tau1.phi - tau2.phi)))
+        dR = np.sqrt((tau1.eta-tau2.eta)**2 + deltaphi_devfunc(tau1.phi, tau2.phi)**2)  
+
+        if (m < mll_lims[0] or m > mll_lims[1]): continue
+        if (dR < dR_lims[0] or dR > dR_lims[1]): continue
+
+        mask[i] = True
+
+    return mask
+
+@nb.jit
+def mask_by_dR_mll_1lep_1tau(taus, leps, dR_lims, mll_lims):
+    nEvents = len(taus)
+    mask = np.zeros(nEvents, dtype=np.int64) > 0
+    for i in range(nEvents):
+        # if there is no tau in this event (masked by ntau = 2 requirement early on)
+        if len(taus[i]) != 1: continue
+        if len(leps[i]) != 1: continue
+        tau1 = taus[i][0]
+        lep1 = leps[i][0]
+        m = np.sqrt(2*tau1.pt*lep1.pt*(np.cosh(tau1.eta - lep1.eta) - np.cos(tau1.phi - lep1.phi)))
+        dR = np.sqrt((tau1.eta-lep1.eta)**2 + deltaphi_devfunc(tau1.phi, lep1.phi)**2)  
+
+        if (m < mll_lims[0] or m > mll_lims[1]): continue
+        if (dR < dR_lims[0] or dR > dR_lims[1]): continue
+
+        mask[i] = True
+
+    return mask

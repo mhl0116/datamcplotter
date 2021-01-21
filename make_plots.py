@@ -69,7 +69,7 @@ def process_tau(taus_all, genWeight_all):
         out_hists["tau_deeptau_vs_j_1"] = Hist1D(ak.to_numpy(taus.idDeepTau2017v2p1VSjet[:,0]), bins = bin_deeptau, weights=  ak.to_numpy(genWeight), label="tau1 deepTau vs j")
         out_hists["tau_deeptau_vs_m_1"] = Hist1D(ak.to_numpy(taus.idDeepTau2017v2p1VSmu[:,0]), bins = bin_deeptau, weights=  ak.to_numpy(genWeight), label="tau1 deepTau vs mu")
         out_hists["tau_deeptau_vs_e_1"] = Hist1D(ak.to_numpy(taus.idDeepTau2017v2p1VSe[:,0]), bins = bin_deeptau, weights=  ak.to_numpy(genWeight), label="tau1 deepTau vs e")
-        out_hists["n_tau"] = Hist1D(ak.num(taus), bins = np.linspace(0,5,6), label = "n taus")
+        out_hists["n_tau"] = Hist1D(ak.num(taus), bins = np.linspace(0,5,6), weights=  ak.to_numpy(genWeight), label = "n taus")
         taus_2 = taus_all[ntau == 2]
         genWeight_2 = genWeight_all[ntau == 2]
         if len(taus_2) == 0:
